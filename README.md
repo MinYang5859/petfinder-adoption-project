@@ -27,12 +27,32 @@ state_labels.csv
 
 Only `train.csv` and the three label files are required for the P1 notebook.
 
-Expected folder structure:
+## Project Structure
+
+After cloning the repository, the `data/raw/` folder contains only `.gitkeep`. The original dataset is not included in GitHub.
 
 ```text
 petfinder-adoption-project/
 ├── data/
 │   └── raw/
+│       └── .gitkeep
+├── figures/
+├── notebooks/
+│   └── 01_p1_initial_eda.ipynb
+├── P1/
+│   └── 01_p1_initial_eda.html
+├── .gitignore
+├── README.md
+└── requirements.txt
+```
+
+After downloading the required data files, place them inside `data/raw/`. The local project structure should then look like this:
+
+```text
+petfinder-adoption-project/
+├── data/
+│   └── raw/
+│       ├── .gitkeep
 │       ├── train.csv
 │       ├── breed_labels.csv
 │       ├── color_labels.csv
@@ -41,12 +61,13 @@ petfinder-adoption-project/
 ├── notebooks/
 │   └── 01_p1_initial_eda.ipynb
 ├── P1/
-│   ├── 01_p1_initial_eda.html
-│   └── 01_p1_initial_eda.pdf
+│   └── 01_p1_initial_eda.html
 ├── .gitignore
 ├── README.md
 └── requirements.txt
 ```
+
+The CSV files are stored locally and ignored by Git. They will not appear in the GitHub repository.
 
 ## Development Environment
 

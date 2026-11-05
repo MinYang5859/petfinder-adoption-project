@@ -7802,13 +7802,186 @@ a.anchor-link {
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h1 id="PetFinder.my-Adoption-Prediction">PetFinder.my Adoption Prediction<a class="anchor-link" href="#PetFinder.my-Adoption-Prediction">¶</a></h1><h2 id="P1:-Initial-Data-Exploration">P1: Initial Data Exploration<a class="anchor-link" href="#P1:-Initial-Data-Exploration">¶</a></h2><p><strong>Student:</strong> Min Yang<br/>
-<strong>Course:</strong> MSBA 265<br/>
-<strong>Professor</strong> Shyla Solis<br/>
-<strong>Dataset:</strong> PetFinder.my Adoption Prediction<br/>
-<strong>Source:</strong> Kaggle Competition</p>
-<h3 id="Project-Question">Project Question<a class="anchor-link" href="#Project-Question">¶</a></h3><p>Can structured pet profile information available at listing time be used to predict adoption speed and identify profiles that may need additional support?</p>
-<h3 id="Scope">Scope<a class="anchor-link" href="#Scope">¶</a></h3><p>This initial analysis focuses on structured tabular data. Text, image, sentiment, and metadata features are not included in the P1 baseline.</p>
+<h1 id="PetFinder.my-Adoption-Prediction-Project-Proposal">PetFinder.my Adoption Prediction Project Proposal<a class="anchor-link" href="#PetFinder.my-Adoption-Prediction-Project-Proposal">¶</a></h1><h2 id="1.-Topic-Background">1. Topic Background<a class="anchor-link" href="#1.-Topic-Background">¶</a></h2><p>PetFinder.my is a Malaysian animal welfare platform that helps shelters, rescuers, fosterers, and potential adopters connect with one another. The platform provides adoption profiles and other online resources to improve communication, organize pet information, and help homeless animals find suitable homes (PetFinder.my, n.d.).</p>
+<p>One challenge in animal adoption is that some pets are adopted quickly, while others remain listed for a long time. The PetFinder.my Adoption Prediction dataset was created to study how quickly pets are adopted based on the information presented in their online listings.</p>
+<p>The listings contain pet characteristics, health information, adoption fees, descriptions, and uploaded photos. Understanding which listing characteristics are associated with adoption speed may help rescuers prepare more useful pet profiles and identify animals that may need additional attention.</p>
+<h2 id="2.-Business-Problem-and-Stakeholders">2. Business Problem and Stakeholders<a class="anchor-link" href="#2.-Business-Problem-and-Stakeholders">¶</a></h2><p>Some pets remain listed for a long time without being adopted. However, rescuers and animal welfare organizations may not know which pet characteristics or listing features are associated with faster or slower adoption.</p>
+<p>The main stakeholders for this project are:</p>
+<ul>
+<li>PetFinder.my</li>
+<li>Animal shelters</li>
+<li>Independent animal rescuers</li>
+<li>Pet fosterers</li>
+<li>Potential adopters</li>
+</ul>
+<p>PetFinder.my, shelters, rescuers, and fosterers could use the analysis to identify listings that may need more attention. For example, the findings may help them review the photos, descriptions, adoption fees, or other information included in a pet profile.</p>
+<p>Potential adopters may also benefit from clearer and more complete listings because these profiles could make it easier to understand a pet’s characteristics and condition.</p>
+<p>The project does not assume that PetFinder.my currently uses this model. Instead, it proposes how the analysis could support adoption-listing decisions in a realistic animal welfare setting.</p>
+<h2 id="3.-Project-Question">3. Project Question<a class="anchor-link" href="#3.-Project-Question">¶</a></h2><p>Which pet characteristics and listing features are associated with <code>AdoptionSpeed</code>, and can these features be used to predict a pet’s adoption speed category?</p>
+<p>The project focuses on a classification problem because <code>AdoptionSpeed</code> contains five categories from 0 to 4. Lower values represent faster adoption, while higher values represent slower adoption or no recorded adoption after the specified period (PetFinder.my, 2018).</p>
+<p>The categories are:</p>
+<ul>
+<li><code>0</code>: Adopted on the same day as the listing</li>
+<li><code>1</code>: Adopted between 1 and 7 days</li>
+<li><code>2</code>: Adopted between 8 and 30 days</li>
+<li><code>3</code>: Adopted between 31 and 90 days</li>
+<li><code>4</code>: No adoption after 100 days</li>
+</ul>
+<h2 id="4.-Intended-Use">4. Intended Use<a class="anchor-link" href="#4.-Intended-Use">¶</a></h2><p>The proposed model could help identify listings that are more likely to remain available for a longer period. Rescuers could then review these listings and consider whether improvements are needed.</p>
+<p>Possible actions may include:</p>
+<ul>
+<li>Adding clearer or more useful photos</li>
+<li>Improving the pet description</li>
+<li>Reviewing whether important health information is missing</li>
+<li>Checking the adoption fee</li>
+<li>Providing additional support or promotion for slower-adopting pets</li>
+</ul>
+<p>The model would be used as a decision-support tool rather than as an automatic decision maker. Its prediction would not determine whether a pet should be promoted or adopted. Instead, it could help rescuers decide which listings may need additional review.</p>
+<h2 id="5.-Success-Measures">5. Success Measures<a class="anchor-link" href="#5.-Success-Measures">¶</a></h2><p>The model will be evaluated using:</p>
+<ul>
+<li>Quadratic weighted kappa</li>
+<li>Accuracy</li>
+<li>Macro F1-score</li>
+<li>Confusion matrix</li>
+</ul>
+<p>Quadratic weighted kappa is an important measure because the <code>AdoptionSpeed</code> classes have a meaningful order. For example, predicting class 3 instead of class 4 is a smaller error than predicting class 0 instead of class 4. Quadratic weighted kappa was also the evaluation measure associated with the original Kaggle competition (PetFinder.my, 2018).</p>
+<p>Accuracy will show the overall percentage of correct predictions. However, because the target classes are not evenly distributed, accuracy alone may not fully describe model performance.</p>
+<p>Macro F1-score will give equal importance to each target class. This makes it useful for checking whether the model performs reasonably across both common and less common classes.</p>
+<p>The confusion matrix will show which <code>AdoptionSpeed</code> categories are correctly classified and which categories are commonly confused.</p>
+<p>The model will be considered useful if it:</p>
+<ol>
+<li>Performs better than a simple majority-class baseline.</li>
+<li>Produces understandable patterns or decision rules.</li>
+<li>Provides results that could reasonably support the review of pet adoption listings.</li>
+</ol>
+<p>A specific final performance threshold has not yet been selected because P1 focuses on initial feasibility and exploration. The first comparison will determine whether the Decision Tree improves on the baseline.</p>
+<h2 id="6.-Dataset-and-Access">6. Dataset and Access<a class="anchor-link" href="#6.-Dataset-and-Access">¶</a></h2><p>The dataset comes from the Kaggle PetFinder.my Adoption Prediction competition:</p>
+<p><a href="https://www.kaggle.com/competitions/petfinder-adoption-prediction/data">https://www.kaggle.com/competitions/petfinder-adoption-prediction/data</a></p>
+<p>Each row normally represents one pet adoption profile. However, some profiles may represent a group of pets. In those cases, adoption speed is based on the time required for all pets in that profile to be adopted (PetFinder.my, 2018).</p>
+<p>The training data contains:</p>
+<ul>
+<li>14,993 rows</li>
+<li>24 original columns</li>
+<li>A target variable named <code>AdoptionSpeed</code></li>
+</ul>
+<p>Important fields include:</p>
+<ul>
+<li><code>Type</code>: Dog or cat</li>
+<li><code>Age</code>: Age when listed, measured in months</li>
+<li><code>Breed1</code>: Primary breed</li>
+<li><code>Breed2</code>: Secondary breed, if applicable</li>
+<li><code>Gender</code>: Pet gender</li>
+<li><code>MaturitySize</code>: Expected adult size</li>
+<li><code>FurLength</code>: Fur length</li>
+<li><code>Vaccinated</code>: Vaccination status</li>
+<li><code>Dewormed</code>: Deworming status</li>
+<li><code>Sterilized</code>: Sterilization status</li>
+<li><code>Health</code>: Health condition</li>
+<li><code>Quantity</code>: Number of pets included in the profile</li>
+<li><code>Fee</code>: Adoption fee</li>
+<li><code>State</code>: Location in Malaysia</li>
+<li><code>VideoAmt</code>: Number of uploaded videos</li>
+<li><code>PhotoAmt</code>: Number of uploaded photos</li>
+<li><code>Description</code>: Written profile description</li>
+<li><code>AdoptionSpeed</code>: Target category</li>
+</ul>
+<p>The complete Kaggle dataset includes tabular, text, and image information. P1 uses the tabular training file and the breed, color, and state label files. The image and supplemental metadata files are not required for the initial analysis.</p>
+<p>The original dataset is not stored in the GitHub repository because of its size and Kaggle access requirements. Download and setup instructions are provided in <code>README.md</code>.</p>
+<h2 id="7.-Data-Quality,-Privacy,-and-Access-Limitations">7. Data Quality, Privacy, and Access Limitations<a class="anchor-link" href="#7.-Data-Quality,-Privacy,-and-Access-Limitations">¶</a></h2><p>The initial exploration identified several issues that should be considered.</p>
+<p>First, the <code>AdoptionSpeed</code> classes are not evenly distributed. This means that a model may favor the more common classes. For this reason, the project will use stratified data splitting and multiple evaluation measures rather than relying only on accuracy.</p>
+<p>Second, some variables contain unusual values. For example, the oldest age group includes a small number of pets and some unusually high age values. These records are not automatically removed because they may still represent possible listings, but their influence should be reviewed during modeling.</p>
+<p>Third, some comparison groups are much smaller than others. For example, most listings do not charge an adoption fee, while the paid-fee groups contain far fewer records. The no-photo group is also much smaller than the other photo groups. Results for small groups should therefore be interpreted carefully.</p>
+<p>The dataset includes a hashed <code>RescuerID</code>, but it does not provide directly identifiable personal information for the analysis. Pet images and profile descriptions may still contain sensitive or user-generated content, so the project will use only the files needed for the course analysis and will not redistribute the original Kaggle data.</p>
+<p>Access to the dataset may require a Kaggle account and acceptance of the competition rules. The GitHub repository provides instructions but does not include the original CSV data files.</p>
+<h2 id="8.-Initial-Data-Exploration">8. Initial Data Exploration<a class="anchor-link" href="#8.-Initial-Data-Exploration">¶</a></h2><p>The P1 notebook examines:</p>
+<ol>
+<li>The overall <code>AdoptionSpeed</code> distribution</li>
+<li>Pet type and <code>AdoptionSpeed</code></li>
+<li>Pet age and <code>AdoptionSpeed</code></li>
+<li>Adoption fee and <code>AdoptionSpeed</code></li>
+<li>Number of photos and <code>AdoptionSpeed</code></li>
+</ol>
+<p>The initial findings are summarized below.</p>
+<h3 id="Target-Distribution">Target Distribution<a class="anchor-link" href="#Target-Distribution">¶</a></h3><p><code>AdoptionSpeed</code> is not evenly distributed across the five classes. This imbalance should be considered when splitting the data and evaluating future models.</p>
+<h3 id="Pet-Type">Pet Type<a class="anchor-link" href="#Pet-Type">¶</a></h3><p>Cats have a slightly lower average <code>AdoptionSpeed</code> than dogs. This suggests that pet type may contain useful predictive information, although the difference is not large enough to explain adoption speed by itself.</p>
+<h3 id="Pet-Age">Pet Age<a class="anchor-link" href="#Pet-Age">¶</a></h3><p>Young pets generally appear in faster adoption classes. Pets aged 0–5 months have a lower mean <code>AdoptionSpeed</code> than the older age groups.</p>
+<p>However, the pattern is not completely linear. The mean <code>AdoptionSpeed</code> does not continuously increase for every older age group. The oldest group is also relatively small, so its results should be interpreted carefully.</p>
+<h3 id="Adoption-Fee">Adoption Fee<a class="anchor-link" href="#Adoption-Fee">¶</a></h3><p>Most listings do not charge an adoption fee. The free group represents 84.46% of the training data.</p>
+<p>The results do not show a simple linear relationship between adoption fee and <code>AdoptionSpeed</code>. The RM 51–100 group has the highest mean <code>AdoptionSpeed</code>, while the RM 201+ group has a lower mean. Therefore, higher adoption fees do not consistently correspond to slower or faster adoption classes.</p>
+<h3 id="Number-of-Photos">Number of Photos<a class="anchor-link" href="#Number-of-Photos">¶</a></h3><p>The number of photos shows a noticeable relationship with <code>AdoptionSpeed</code>.</p>
+<p>Listings without photos have the highest mean <code>AdoptionSpeed</code>, and 62.46% of the no-photo listings are in <code>AdoptionSpeed 4</code>. The percentage of class 4 generally decreases as the number of photos increases.</p>
+<p>However, the no-photo group contains only 341 listings, and the mean <code>AdoptionSpeed</code> does not decrease continuously across every photo group. Therefore, the results show an association but do not prove that adding photos directly causes faster adoption.</p>
+<h2 id="9.-Planned-Method">9. Planned Method<a class="anchor-link" href="#9.-Planned-Method">¶</a></h2><p>A Decision Tree classifier is planned as the first model.</p>
+<p>A Decision Tree is appropriate for this project because:</p>
+<ul>
+<li>It can be used for multiclass classification.</li>
+<li>It can model nonlinear relationships.</li>
+<li>It can work with both categorical and numeric information after preprocessing.</li>
+<li>Its decision rules can be explained and visualized.</li>
+<li>It provides a clear starting point for comparing model performance.</li>
+</ul>
+<p>Interpretability is important because the goal is not only to predict <code>AdoptionSpeed</code>, but also to understand which listing characteristics may contribute to the predictions.</p>
+<p>A Random Forest may be tested later as a comparison model if time permits. It may provide better predictive performance by combining multiple trees, although it is less directly interpretable than a single Decision Tree.</p>
+<h2 id="10.-Baseline">10. Baseline<a class="anchor-link" href="#10.-Baseline">¶</a></h2><p>A majority-class classifier will be used as the first baseline.</p>
+<p>This baseline always predicts the most common <code>AdoptionSpeed</code> category, regardless of the pet’s characteristics. It provides a simple minimum standard for evaluating the Decision Tree.</p>
+<p>If the Decision Tree cannot perform better than the majority-class baseline, the selected features or model design may not provide enough useful predictive information.</p>
+<p>The Decision Tree should perform better than the baseline while still producing understandable decision patterns.</p>
+<h2 id="11.-Feasibility">11. Feasibility<a class="anchor-link" href="#11.-Feasibility">¶</a></h2><p>The initial exploration confirms that the project is technically feasible.</p>
+<p>The following tasks have been completed successfully:</p>
+<ul>
+<li>The training dataset can be loaded.</li>
+<li>The 14,993 training records can be analyzed.</li>
+<li>The target variable is available.</li>
+<li>Important feature fields are present.</li>
+<li>Broader age, fee, and photo groups can be created without missing group values.</li>
+<li>Five relevant charts have been generated.</li>
+<li>The notebook runs from beginning to end without runtime errors.</li>
+<li>The project files can be reproduced using the GitHub repository and README instructions.</li>
+</ul>
+<p>These results show that the dataset and current technical environment are suitable for developing an initial classification model.</p>
+<h2 id="12.-Next-Steps">12. Next Steps<a class="anchor-link" href="#12.-Next-Steps">¶</a></h2><p>The next steps are:</p>
+<ol>
+<li>Select the features for the baseline model.</li>
+<li>Separate the target variable from the predictor variables.</li>
+<li>Prepare categorical and numeric variables.</li>
+<li>Decide how to handle missing or unspecified values.</li>
+<li>Create stratified training and validation sets.</li>
+<li>Build a majority-class baseline.</li>
+<li>Train a small Decision Tree classifier.</li>
+<li>Evaluate the model using quadratic weighted kappa, accuracy, macro F1-score, and a confusion matrix.</li>
+<li>Review the Decision Tree rules and feature importance.</li>
+<li>Check for overfitting by comparing training and validation performance.</li>
+<li>Compare the Decision Tree with a Random Forest if time permits.</li>
+<li>Document the results, limitations, and possible improvements.</li>
+</ol>
+<p>Some unusually high age values, unequal group sizes, and class imbalance will need to be considered during model development and interpretation.</p>
+<h2 id="13.-Limitations">13. Limitations<a class="anchor-link" href="#13.-Limitations">¶</a></h2><p>The initial findings describe associations and do not prove causation.</p>
+<p>For example, listings with more photos may have lower <code>AdoptionSpeed</code> values, but this does not prove that adding photos alone causes a pet to be adopted faster. Listings with more photos may also differ in description quality, pet age, rescuer activity, health condition, location, or other characteristics.</p>
+<p>The dataset also represents PetFinder.my listings from a specific period and location. The results may not apply equally to all shelters, countries, or adoption platforms.</p>
+<p>The model should therefore be treated as a decision-support tool. Its results should be combined with the experience and judgment of rescuers and animal welfare organizations.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=c1927186">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h1 id="P1-Initial-Exploratory-Data-Analysis">P1 Initial Exploratory Data Analysis<a class="anchor-link" href="#P1-Initial-Exploratory-Data-Analysis">¶</a></h1><p>The previous sections introduced the project background, business problem, stakeholders, dataset, proposed modeling method, and intended use. This section moves from the project proposal to the initial examination of the PetFinder.my training data.</p>
+<p>The purpose of this exploratory data analysis is to:</p>
+<ol>
+<li>Confirm that the required data files can be loaded successfully.</li>
+<li>Review the dataset structure, variable types, and missing values.</li>
+<li>Examine the distribution of the target variable, <code>AdoptionSpeed</code>.</li>
+<li>Explore how selected pet and listing characteristics are associated with adoption speed.</li>
+<li>Identify unusual values, unequal group sizes, and other issues that may affect future modeling.</li>
+<li>Confirm whether the dataset is suitable for building an initial classification model.</li>
+</ol>
+<p>The analysis first reviews the overall data profile and target distribution. It then focuses on four selected areas: pet type, age, adoption fee, and number of photos. These variables were selected because they are understandable to project stakeholders and may provide useful information for a future Decision Tree classifier.</p>
+<p>The findings in this section are exploratory. They describe patterns and associations in the available data but do not establish causal relationships.</p>
+<h2 id="1.-Notebook-Setup-and-Data-Loading">1. Notebook Setup and Data Loading<a class="anchor-link" href="#1.-Notebook-Setup-and-Data-Loading">¶</a></h2><p>The following cells import the required Python libraries, define the project paths, and load the training and label files used in the P1 analysis.</p>
 </div>
 </div>
 </div>
@@ -12318,6 +12491,30 @@ Missing PhotoGroup values: 0
 </table>
 </div>
 </div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=799b9b17">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h2 id="References">References<a class="anchor-link" href="#References">¶</a></h2><p>PetFinder.my. (n.d.). <em>About PetFinder.my</em>.<br/>
+<a href="https://www.petfinder.my/about.htm">https://www.petfinder.my/about.htm</a></p>
+<p>PetFinder.my. (2018). <em>PetFinder.my adoption prediction</em> [Data set]. Kaggle.<br/>
+<a href="https://www.kaggle.com/competitions/petfinder-adoption-prediction">https://www.kaggle.com/competitions/petfinder-adoption-prediction</a></p>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=904065ec">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
 </div>
 </div>
 </div>

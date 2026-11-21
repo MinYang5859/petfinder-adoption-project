@@ -41,43 +41,99 @@ petfinder-adoption-project/
 
 The P1 HTML export provides a browser-readable copy of the exploratory analysis. The P2 report explains the model, evaluation, and proposed staff review process.
 
-## Windows Setup
+## Setup and Reproduction
 
-The author reproduced P1 and P2 on Windows with Python 3.13.5. Python 3.14.3 is an alternate environment to try. Record the version you actually use and whether each check passes.
+You will need Git and Python. The reference run used Windows and Python 3.13.5. You can start with another installed Python version and use the dependency and import checks below to see whether it works for your platform. If installation fails for your version, try Python 3.13 in a fresh environment. Record the OS and Python version you actually test.
 
-1. Open Windows PowerShell or Command Prompt (cmd). Start in a folder where you want to create a fresh clone.
-2. Run the following commands. If your assignment specifies a commit, run `git checkout COMMIT_ID` with the assigned ID before continuing. A detached HEAD message is normal for that checkout.
+### 1. Clone the repository
+
+Open a terminal in the folder where you want to put the validation copy.
 
 ```text
 git clone https://github.com/MinYang5859/petfinder-adoption-project.git petfinder-p2-validation
 cd petfinder-p2-validation
 git log -1 --oneline
-py --version
 ```
 
-3. Create the environment. Use the first command if Python 3.13 is available. If that command reports that no suitable runtime was found and `py --version` shows 3.14, use the second command instead.
+If you were given a specific commit, run `git checkout COMMIT_ID` with that ID, then run `git log -1 --oneline` again. A detached HEAD message is normal for this checkout. Run the remaining commands from the repository root.
+
+### 2. Create the project environment
+
+**Windows (PowerShell or Command Prompt)**
 
 ```text
-py -3.13 -m venv .venv
+py -m venv .venv
 ```
 
-If only Python 3.14 is available, run this instead:
+If Windows cannot find the launcher, check that `python --version` works and run `python -m venv .venv` instead.
 
-```text
-py -3.14 -m venv .venv
+**macOS or Linux**
+
+```sh
+python3 -m venv .venv
 ```
 
-If `py` is unavailable, run `python --version`. If it reports 3.13 or 3.14, use `python -m venv .venv`. If neither command works, install Windows Python from [python.org](https://www.python.org/downloads/windows/) and reopen the terminal. If reusing a previously created `.venv`, check its version using the next block.
+A virtual environment created successfully may produce no terminal output. Keep running commands from the repository root.
 
-4. From the project root, run all three commands below. They work in PowerShell and cmd without activating the environment.
+### 3. Activate the environment and verify it
+
+Open the terminal in the repository root. Run only the block matching your shell. In VS Code, use the dropdown beside the terminal **+** button to choose a shell.
+
+**Windows PowerShell** (the prompt usually starts with PS)
+
+```powershell
+.\.venv\Scripts\Activate.ps1
+```
+
+If PowerShell says script execution is disabled, open a **Command Prompt** terminal using the VS Code dropdown and run the cmd block below. From PowerShell, you can also run the following command to open an activated cmd session in the same folder. Continue in that session. Type exit to return to PowerShell.
 
 ```text
-.\.venv\Scripts\python.exe --version
+cmd /k ".venv\Scripts\activate.bat"
+```
+
+**Windows Command Prompt (cmd)**
+
+```cmd
+.venv\Scripts\activate.bat
+```
+
+**macOS or Linux (Bash or Zsh)**
+
+```sh
+source .venv/bin/activate
+```
+
+After activation, the prompt usually starts with (.venv). Prompt appearance can vary. Run this check in the same terminal:
+
+```text
+python -c "import sys; print(sys.executable); print('Virtual environment:', sys.prefix != sys.base_prefix)"
+```
+
+The executable should be inside this clone's .venv and the last line should be Virtual environment: True. If the command points elsewhere, check that you used the activation block for your actual shell. PowerShell and cmd use different activation scripts. If the activation file is missing, confirm that you are in the repository root and repeat Step 2.
+
+Activation applies to the current terminal. Repeat this step after opening a new terminal. If your shell cannot activate the environment, the explicit interpreter commands in the following sections can still run the project.
+
+### 4. Install and verify dependencies
+
+The commands below call the project's Python directly. Start with the first command for your platform and continue only when it succeeds and shows an executable inside this clone's `.venv`. The prompt can stay unchanged throughout setup.
+
+**Windows (PowerShell or Command Prompt)**
+
+```text
+.\.venv\Scripts\python.exe -c "import sys; print(sys.version); print(sys.executable); assert sys.prefix != sys.base_prefix"
 .\.venv\Scripts\python.exe -m pip install -r requirements.txt
-.\.venv\Scripts\python.exe -c "import sys, numpy, pandas, matplotlib, seaborn, sklearn, joblib, ipykernel; print(sys.executable); print('scikit-learn:', sklearn.__version__); print('joblib:', joblib.__version__); print('Imports OK')"
+.\.venv\Scripts\python.exe -c "import numpy, pandas, matplotlib, seaborn, sklearn, joblib, ipykernel; print('scikit-learn', sklearn.__version__); print('joblib', joblib.__version__); print('Imports OK')"
 ```
 
-Verify that the path ends in `.venv\Scripts\python.exe` and the last line is `Imports OK`. The expected pinned versions are scikit-learn 1.9.1 and joblib 1.6.0. Prompt color and the presence of a `(.venv)` prefix do not affect these commands.
+**macOS or Linux**
+
+```sh
+./.venv/bin/python -c "import sys; print(sys.version); print(sys.executable); assert sys.prefix != sys.base_prefix"
+./.venv/bin/python -m pip install -r requirements.txt
+./.venv/bin/python -c "import numpy, pandas, matplotlib, seaborn, sklearn, joblib, ipykernel; print('scikit-learn', sklearn.__version__); print('joblib', joblib.__version__); print('Imports OK')"
+```
+
+Expect `Imports OK`, scikit-learn 1.9.1, and joblib 1.6.0. If the executable is missing, check that `requirements.txt` is visible in your current folder and rerun Step 2. If pip fails, use the troubleshooting table below before continuing.
 
 ## Get the Data
 
@@ -91,7 +147,7 @@ To retrain or run P1, open the [Kaggle competition data page](https://www.kaggle
 | Train and evaluate P2 | `data/raw/train.csv` |
 | Run the P1 notebook | `train.csv`, `breed_labels.csv`, `color_labels.csv`, and `state_labels.csv` in `data/raw/` |
 
-Use the labeled `train.csv`. The script splits this file into training and test sets. Run `dir data\raw` from the project root to verify the file names. Keep the Kaggle CSVs local.
+Use the labeled `train.csv`. The script splits this file into training and test sets. Check the file names in your file browser. Keep the Kaggle CSVs local.
 
 ## P1 — Exploratory Data Analysis
 
@@ -99,7 +155,7 @@ Use the labeled `train.csv`. The script splits this file into training and test 
 
 1. Open `notebooks/01_p1_initial_eda.ipynb` in VS Code.
 2. Open the kernel picker in the upper-right corner.
-3. Choose **Python Environments** and select the project's `.venv`. The interpreter path should end in `.venv\Scripts\python.exe`.
+3. Choose **Python Environments** and select the project's `.venv`. Match the kernel path to the executable printed in Step 4.
 4. Run `import sys; print(sys.executable)` in a notebook cell to verify the kernel path. Restart the kernel and select **Run All**.
 
 ### Expected results
@@ -134,8 +190,16 @@ The majority-class baseline predicts class 4 for every listing because class 4 i
 
 To verify the model supplied in the repository, run this step **before retraining**. From the repository root, run:
 
-```cmd
-.\.venv\Scripts\python.exe notebooks\P2\p2_load_model.py
+**Windows (PowerShell or Command Prompt)**
+
+```text
+.\.venv\Scripts\python.exe notebooks/P2/p2_load_model.py
+```
+
+**macOS or Linux**
+
+```sh
+./.venv/bin/python notebooks/P2/p2_load_model.py
 ```
 
 The script reads the saved model and predicts one fictional listing with `Type=1`, `Age=6`, `Fee=0`, and `PhotoAmt=3`. It runs without the raw CSV. Load only a model file you trust.
@@ -151,8 +215,16 @@ Reloaded model prediction: 4
 
 Place the labeled Kaggle `train.csv` at `data/raw/train.csv`. From the project root, run:
 
-```cmd
-.\.venv\Scripts\python.exe notebooks\P2\p2_baseline.py
+**Windows (PowerShell or Command Prompt)**
+
+```text
+.\.venv\Scripts\python.exe notebooks/P2/p2_baseline.py
+```
+
+**macOS or Linux**
+
+```sh
+./.venv/bin/python notebooks/P2/p2_baseline.py
 ```
 
 The script prints the split counts, evaluation metrics, and class 4 results. It writes the following files:
@@ -160,7 +232,7 @@ The script prints the split counts, evaluation metrics, and class 4 results. It 
 - `figures/p2_decision_tree_confusion_matrix.png`
 - `artifacts/p2_decision_tree.joblib`
 
-The training script prints `Original model prediction: 4` for the same fictional listing. Run `.\.venv\Scripts\python.exe notebooks\P2\p2_load_model.py` again to verify that the locally trained and saved model returns the same prediction.
+The training script prints `Original model prediction: 4` for the same fictional listing. Repeat the **Reload the saved model** command for your platform to verify that the locally trained and saved model returns the same prediction.
 
 ### Expected test results
 
@@ -178,13 +250,13 @@ The historical test results estimate review workload under this rule. Whether ac
 ## P2 Peer Validation Checklist
 
 - [ ] Clone the repository into a new folder and record the commit ID.
-- [ ] Create the project `.venv`, install dependencies using its Python executable, and verify `Imports OK`.
-- [ ] Run `.\.venv\Scripts\python.exe notebooks\P2\p2_load_model.py` before retraining. Confirm that the supplied model returns class 4 for the fictional listing.
+- [ ] Create and activate the project `.venv`, install dependencies using its Python executable, and verify `Imports OK`.
+- [ ] Run **Reload the saved model** before retraining. Confirm that the supplied model returns class 4 for the fictional listing.
 - [ ] Download the labeled Kaggle CSV and place it at `data/raw/train.csv`.
-- [ ] Run `.\.venv\Scripts\python.exe notebooks\P2\p2_baseline.py`. Confirm 12,464 training listings, 2,529 test listings, and zero shared rescuer IDs.
+- [ ] Run **Train and evaluate**. Confirm 12,464 training listings, 2,529 test listings, and zero shared rescuer IDs.
 - [ ] Compare the actual metrics with the P2 results table. Record any differences.
 - [ ] Open the generated confusion matrix. Confirm that the cell for actual class 4 and predicted class 4 shows 454.
-- [ ] Run `.\.venv\Scripts\python.exe notebooks\P2\p2_load_model.py` again. Confirm that the reloaded prediction matches the training script's prediction for the same fictional listing.
+- [ ] Repeat the **Reload the saved model** command for your platform. Confirm that the reloaded prediction matches the training script's prediction for the same fictional listing.
 - [ ] Record the Python version, actual outputs, and any reproduction issues in the Assignment Validation form. Complete and sign the form after testing.
 
 To validate P1 as well, add the three label CSVs, run the notebook using the project `.venv`, and compare the output with the P1 expected results.
@@ -193,13 +265,32 @@ To validate P1 as well, add the three label CSVs, run the notebook using the pro
 
 | What you see | How to proceed |
 |---|---|
-| `No suitable Python runtime found` with `py -3.13` | Run `py -0p` or `py --version`. If 3.14 is available, create the environment with `py -3.14 -m venv .venv`. |
-| No `(.venv)` prefix, or pip reports packages under global Python | Run Step 4 using the full `.\.venv\Scripts\python.exe` prefix. A batch activation command launched from PowerShell does not activate its parent PowerShell session. |
-| `pip` reports no matching distribution or fails to build a package | Check the failing package and your virtual environment's Python version. If this occurs under 3.14, install 3.13 and start with a fresh clone and environment using 3.13. Record the failed attempt in the validation form. |
-| P1 reports `No module named numpy` or asks for `ipykernel` | Complete Step 4, then select the project's `.venv` in the VS Code kernel picker. With the Python and Jupyter extensions enabled, reopen the notebook if the environment is missing from the picker. For a persistent picker issue, run `.\.venv\Scripts\python.exe -m ipykernel install --user --name petfinder-validation --display-name "Python (PetFinder validation)"`, select that kernel, and verify `sys.executable`. |
-| Kaggle denies the download or Python cannot find the CSV | Sign in and accept the competition rules if prompted. Run `dir data\raw` and verify that the file is named `train.csv` and is directly inside `data/raw/`. If Kaggle access remains blocked, record that and complete the saved-model check. |
-| The saved model is missing or gives a version warning | Run `git log -1 --oneline` and `dir artifacts\p2_decision_tree.joblib`. Verify the pinned versions with `.\.venv\Scripts\python.exe -m pip show scikit-learn joblib`. If the supplied artifact still fails, record that result before retraining. Test the newly trained artifact separately. |
-| Results differ from the expected table | Check the commit, Python and dependency versions, and that you used the labeled Kaggle `train.csv`. Record the actual outputs and the differences in the form. |
+| Git or Python is missing | Run `git --version` and the Python version command for your platform. Install the missing tool from [Git](https://git-scm.com/downloads) or [Python](https://www.python.org/downloads/), or use your OS package manager. Reopen the terminal afterward. |
+| Linux cannot create the venv or reports missing `ensurepip` | Install your distribution's venv package for the Python version you chose, then retry in a fresh environment. |
+| The interpreter points outside the project or a package is missing | Repeat Step 4 using the commands for your platform. For P1, select the same executable in the notebook kernel picker. |
+| pip cannot install a dependency | Record the package, error, OS, and Python version. If you tried a different Python version, retry in a fresh Python 3.13 environment. |
+| The notebook kernel is missing | Enable the VS Code Python and Jupyter extensions, then reopen the notebook. If the environment is still missing from the picker, register it using the commands below. |
+| The saved model is missing or fails to load | Check the commit, the artifact path, and the package versions from Step 4. Record the original artifact check before retraining. Reload the newly trained artifact separately. |
+| Kaggle access or a CSV path fails | Sign in and accept the competition rules if prompted. Check that the labeled file is named `train.csv` and is directly inside `data/raw/`. If access remains blocked, record the blocker and complete the saved-model check. |
+| Results differ from the expected table | Verify the commit, Python and dependency versions, and input file. Report your actual results and any discrepancies in the validation form. |
+
+### Register the P1 kernel if it is missing
+
+Run the command for your platform from the repository root after Step 4 succeeds.
+
+**Windows (PowerShell or Command Prompt)**
+
+```text
+.\.venv\Scripts\python.exe -m ipykernel install --user --name petfinder-validation --display-name "Python (PetFinder validation)"
+```
+
+**macOS or Linux**
+
+```sh
+./.venv/bin/python -m ipykernel install --user --name petfinder-validation --display-name "Python (PetFinder validation)"
+```
+
+Select **Python (PetFinder validation)** in VS Code and rerun the kernel path check in the P1 section.
 
 ## P2 Submission Materials
 

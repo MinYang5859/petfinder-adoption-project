@@ -43,21 +43,45 @@ The P1 HTML export provides a browser-readable copy of the exploratory analysis.
 
 ## Setup and Reproduction
 
+For P2 validation, complete Steps 1–4, [reload the supplied model](#reload-the-saved-model), [download the data](#get-the-data), and [train and evaluate](#train-and-evaluate). Follow the [P2 checklist](#p2-peer-validation-checklist) to record your results. The P1 notebook has its own instructions below.
+
 You will need Git and Python. The reference run used Windows and Python 3.13.5. You can start with another installed Python version and use the dependency and import checks below to see whether it works for your platform. If installation fails for your version, try Python 3.13 in a fresh environment. Record the OS and Python version you actually test.
 
-### 1. Clone the repository
+### 1. Open the repository
 
-Open a terminal in the folder where you want to put the validation copy.
+Choose the instructions that match what you already have.
+
+**If this is your first clone**, open a terminal in the folder where you want to put the project. Run these two lines:
 
 ```text
-git clone https://github.com/MinYang5859/petfinder-adoption-project.git petfinder-p2-validation
-cd petfinder-p2-validation
+git clone https://github.com/MinYang5859/petfinder-adoption-project.git
+cd petfinder-adoption-project
+```
+
+**If you already cloned the project**, open your existing project folder in VS Code and open a terminal there. If your terminal is in the parent folder and you used the default clone name, run this command:
+
+```text
+cd petfinder-adoption-project
+```
+
+If you are already inside the project folder, continue with the checks below. If you chose a different folder name when cloning, open that existing folder in VS Code.
+
+**Check your location and version** from inside the project:
+
+```text
+git rev-parse --show-toplevel
 git log -1 --oneline
 ```
 
-If you were given a specific commit, run `git checkout COMMIT_ID` with that ID, then run `git log -1 --oneline` again. A detached HEAD message is normal for this checkout. Run the remaining commands from the repository root.
+The first command should display the folder containing README.md and requirements.txt. Use that folder for all remaining commands. Record the commit ID from the second command.
+
+- If you are on main and need the latest published version, run `git pull --ff-only origin main` and check the commit again.
+- If you were assigned a specific commit, run `git fetch origin`, then `git checkout COMMIT_ID`, replacing `COMMIT_ID` with the assigned ID. Check the commit again. A detached HEAD message is normal for this checkout.
+- If Git stops because of local edits, leave the existing copy in place and use the first-clone instructions from a different parent folder.
 
 ### 2. Create the project environment
+
+If this clone already has a working .venv, skip creation and go to Step 3.
 
 **Windows (PowerShell or Command Prompt)**
 
@@ -115,7 +139,7 @@ Activation applies to the current terminal. Repeat this step after opening a new
 
 ### 4. Install and verify dependencies
 
-The commands below call the project's Python directly. Start with the first command for your platform and continue only when it succeeds and shows an executable inside this clone's `.venv`. The prompt can stay unchanged throughout setup.
+The commands below call the project's Python directly. Start with the first command for your platform and continue only when it succeeds and shows an executable inside this clone's `.venv`. These commands work in the activated terminal and also work if your shell cannot activate the environment.
 
 **Windows (PowerShell or Command Prompt)**
 
@@ -249,7 +273,7 @@ The historical test results estimate review workload under this rule. Whether ac
 
 ## P2 Peer Validation Checklist
 
-- [ ] Clone the repository into a new folder and record the commit ID.
+- [ ] Open the correct repository copy and record the commit ID.
 - [ ] Create and activate the project `.venv`, install dependencies using its Python executable, and verify `Imports OK`.
 - [ ] Run **Reload the saved model** before retraining. Confirm that the supplied model returns class 4 for the fictional listing.
 - [ ] Download the labeled Kaggle CSV and place it at `data/raw/train.csv`.

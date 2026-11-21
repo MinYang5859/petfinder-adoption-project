@@ -14,7 +14,7 @@ from sklearn.metrics import (
 import joblib
 
 # Load the labeled PetFinder listings.
-project_root = Path(__file__).resolve().parents[1]
+project_root = Path(__file__).resolve().parents[2]
 data = pd.read_csv(project_root / "data" / "raw" / "train.csv")
 
 # Split by rescuer so each rescuer appears in only one set.

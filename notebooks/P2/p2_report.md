@@ -45,7 +45,7 @@ I checked the four model features for missing values in both sets. All four had 
 
 I used `GroupShuffleSplit` with `RescuerID` as the grouping field and `random_state=42`. About 20% of rescuer groups were held out for testing. Because rescuers can have different numbers of listings, the resulting split contained 12,464 training listings and 2,529 test listings. I verified that zero rescuer IDs appeared in both sets. This design measures performance on listings from rescuers the model had not seen during training.
 
-The baseline predicts whichever class appears most often in the training set. I compared it with a Decision Tree limited to a maximum depth of 4. I chose a shallow tree to keep the first model simple and make its decision rules easier to inspect. Both methods used the same test listings for evaluation. The implementation is in `src/p2_baseline.py`.
+The baseline predicts whichever class appears most often in the training set. I compared it with a Decision Tree limited to a maximum depth of 4. I chose a shallow tree to keep the first model simple and make its decision rules easier to inspect. Both methods used the same test listings for evaluation. The implementation is in `notebooks/P2/p2_baseline.py`.
 
 ```mermaid
 flowchart TD
@@ -94,13 +94,13 @@ If rescue staff used every class 4 prediction to flag a listing for manual revie
 
 ## 8. Advanced Component and Reproducibility
 
-I saved the fitted Decision Tree as `artifacts/p2_decision_tree.joblib`. To verify the artifact, I used a fictional listing with `Type=1`, `Age=6`, `Fee=0`, and `PhotoAmt=3`. The original model predicted class 4. I then started a separate Python process and ran `src/p2_load_model.py`. The reloaded model confirmed the same four input fields and returned class 4 for the same example. This matched the original prediction. The reload script runs without reading the raw CSV or retraining the tree.
+I saved the fitted Decision Tree as `artifacts/p2_decision_tree.joblib`. To verify the artifact, I used a fictional listing with `Type=1`, `Age=6`, `Fee=0`, and `PhotoAmt=3`. The original model predicted class 4. I then started a separate Python process and ran `notebooks/P2/p2_load_model.py`. The reloaded model confirmed the same four input fields and returned class 4 for the same example. This matched the original prediction. The reload script runs without reading the raw CSV or retraining the tree.
 
 The project README explains how to create the `.venv`, install dependencies, and place the Kaggle data in `data/raw/`. I tested the P2 scripts on Windows using Python 3.13.5, `scikit-learn` 1.9.1, and `joblib` 1.6.0. From the repository root, the two commands are:
 
 ```cmd
-python src\p2_baseline.py
-python src\p2_load_model.py
+python notebooks\P2\p2_baseline.py
+python notebooks\P2\p2_load_model.py
 ```
 
 The first command prints the evaluation results and saves the confusion matrix and fitted model. The second demonstrates that the saved model can be reloaded and used in a fresh process.
@@ -128,8 +128,8 @@ PetFinder.my. (2018). *PetFinder.my adoption prediction* [Data set]. Kaggle.
 | File | Purpose |
 |---|---|
 | `notebooks/01_p1_initial_eda.ipynb` | P1 exploratory data analysis |
-| `src/p2_baseline.py` | P2 data split, baseline, training, evaluation, and model export |
-| `src/p2_load_model.py` | Standalone model reload and prediction example |
+| `notebooks/P2/p2_baseline.py` | P2 data split, baseline, training, evaluation, and model export |
+| `notebooks/P2/p2_load_model.py` | Standalone model reload and prediction example |
 | `artifacts/p2_decision_tree.joblib` | Fitted Decision Tree |
 | `figures/p2_decision_tree_confusion_matrix.png` | Confusion matrix for the held-out test set |
 | `README.md` and `requirements.txt` | Setup instructions, data access, and dependencies |

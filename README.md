@@ -28,12 +28,12 @@ petfinder-adoption-project/
 ├── notebooks/
 │   ├── 01_p1_initial_eda.ipynb
 │   └── P2/
-│       └── p2_report.md
+│       ├── p2_baseline.py
+│       ├── p2_load_model.py
+│       ├── p2_report.md
+│       └── p2_stakeholder_presentation.pptx
 ├── P1/
 │   └── 01_p1_initial_eda.html
-├── src/
-│   ├── p2_baseline.py
-│   └── p2_load_model.py
 ├── .gitignore
 ├── README.md
 └── requirements.txt
@@ -132,7 +132,7 @@ The majority-class baseline predicts class 4 for every listing because class 4 i
 To verify the model supplied in the repository, run this step **before retraining**. From the repository root, with `.venv` active, run:
 
 ```cmd
-python src\p2_load_model.py
+python notebooks\P2\p2_load_model.py
 ```
 
 The script reads the saved model and predicts one fictional listing with `Type=1`, `Age=6`, `Fee=0`, and `PhotoAmt=3`. It runs without the raw CSV. Load only a model file you trust.
@@ -149,7 +149,7 @@ Reloaded model prediction: 4
 Place the labeled Kaggle `train.csv` at `data/raw/train.csv`. With `.venv` active, run:
 
 ```cmd
-python src\p2_baseline.py
+python notebooks\P2\p2_baseline.py
 ```
 
 The script prints the split counts, evaluation metrics, and class 4 results. It writes the following files:
@@ -157,7 +157,7 @@ The script prints the split counts, evaluation metrics, and class 4 results. It 
 - `figures/p2_decision_tree_confusion_matrix.png`
 - `artifacts/p2_decision_tree.joblib`
 
-The training script prints `Original model prediction: 4` for the same fictional listing. Run `python src\p2_load_model.py` again to verify that the locally trained and saved model returns the same prediction.
+The training script prints `Original model prediction: 4` for the same fictional listing. Run `python notebooks\P2\p2_load_model.py` again to verify that the locally trained and saved model returns the same prediction.
 
 ### Expected test results
 
@@ -176,12 +176,12 @@ The historical test results estimate review workload under this rule. Whether ac
 
 - [ ] Clone the repository into a new folder and record the commit ID.
 - [ ] Create and activate the Python 3.13 `.venv`. Install the packages from `requirements.txt`.
-- [ ] Run `python src\p2_load_model.py` before retraining. Confirm that the supplied model returns class 4 for the fictional listing.
+- [ ] Run `python notebooks\P2\p2_load_model.py` before retraining. Confirm that the supplied model returns class 4 for the fictional listing.
 - [ ] Download the labeled Kaggle CSV and place it at `data/raw/train.csv`.
-- [ ] Run `python src\p2_baseline.py`. Confirm 12,464 training listings, 2,529 test listings, and zero shared rescuer IDs.
+- [ ] Run `python notebooks\P2\p2_baseline.py`. Confirm 12,464 training listings, 2,529 test listings, and zero shared rescuer IDs.
 - [ ] Compare the actual metrics with the P2 results table. Record any differences.
 - [ ] Open the generated confusion matrix. Confirm that the cell for actual class 4 and predicted class 4 shows 454.
-- [ ] Run `python src\p2_load_model.py` again. Confirm that the reloaded prediction matches the training script's prediction for the same fictional listing.
+- [ ] Run `python notebooks\P2\p2_load_model.py` again. Confirm that the reloaded prediction matches the training script's prediction for the same fictional listing.
 - [ ] Record the Python version, actual outputs, and any reproduction issues in the Assignment Validation form. Complete and sign the form after testing.
 
 To validate P1 as well, add the three label CSVs, run the notebook using the project `.venv`, and compare the output with the P1 expected results.
@@ -194,14 +194,14 @@ To validate P1 as well, add the three label CSVs, run the notebook using the pro
 | VS Code is using the wrong notebook kernel | Run `import sys` and `print(sys.executable)` in a notebook cell. If the path points to another environment, select the project's `.venv` in the kernel picker and restart the notebook kernel. |
 | `ModuleNotFoundError` | Activate the project `.venv` and run `python -m pip install -r requirements.txt`. If the error is in the notebook, also check its kernel. |
 | `FileNotFoundError` for a CSV | Run `dir data\raw` from the repository root and check that the files required for your task are in that folder. |
-| P2 cannot find the saved model | Check `dir artifacts\p2_decision_tree.joblib`. If the file is missing from a fresh clone, record that in peer validation. You can still train a local copy with `python src\p2_baseline.py` and then test reloading it. |
+| P2 cannot find the saved model | Check `dir artifacts\p2_decision_tree.joblib`. If the file is missing from a fresh clone, record that in peer validation. You can still train a local copy with `python notebooks\P2\p2_baseline.py` and then test reloading it. |
 | Model reload gives a version warning | Check the active environment with `python -m pip show scikit-learn joblib` and compare the versions with `requirements.txt`. |
-| A figure is missing | For P1, review the first notebook cell that reports an error. For P2, check the output of `python src\p2_baseline.py` for the saved figure path. |
+| A figure is missing | For P1, review the first notebook cell that reports an error. For P2, check the output of `python notebooks\P2\p2_baseline.py` for the saved figure path. |
 
 ## P2 Submission Materials
 
 - P2 report draft (`notebooks/P2/p2_report.md`)
-- Stakeholder PowerPoint (`p2_stakeholder_presentation.pptx`)
+- Stakeholder PowerPoint (`notebooks/P2/p2_stakeholder_presentation.pptx`)
 - Training and evaluation script, saved model, reload script, and confusion matrix
 - README, requirements, and Kaggle data access instructions
 - P1 feedback status and completed Assignment Validation form
@@ -210,14 +210,18 @@ At the time of this P2 draft, P1 had not been graded and instructor feedback was
 
 ## References
 
-PetFinder.my. (n.d.). *About PetFinder.my*.  
+PetFinder.my. (n.d.). *About PetFinder.my*.
+
 https://www.petfinder.my/about.htm
 
-PetFinder.my. (2018). *PetFinder.my adoption prediction* [Data set]. Kaggle.  
+PetFinder.my. (2018). *PetFinder.my adoption prediction* [Data set]. Kaggle.
+
 https://www.kaggle.com/competitions/petfinder-adoption-prediction
 
 ## Author
 
-Min Yang  
-MSBA 265 — Special Analytics Topics  
+Min Yang
+
+MSBA 265 — Special Analytics Topics
+
 University of the Pacific

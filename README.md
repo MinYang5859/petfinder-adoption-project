@@ -1,801 +1,212 @@
-# PetFinder Adoption Prediction — P1 Initial EDA
+# PetFinder.my Adoption Prediction
 
-This repository contains the initial exploratory data analysis for the PetFinder.my Adoption Prediction project in MSBA 265.
+This MSBA 265 project uses historical PetFinder.my listings to study pet adoption speed. P1 explores the relationship between adoption speed and listing characteristics. P2 compares a Decision Tree with a majority-class baseline and demonstrates how to save and reload the fitted model.
 
-The project examines how pet characteristics and listing information are associated with `AdoptionSpeed`. The P1 analysis focuses on the target distribution, pet type, age, adoption fee, and number of photos.
+## Project Questions
 
-## Project Question
+- **P1:** How does adoption speed vary by pet type, age, adoption fee, and number of photos?
+- **P2:** How well can a Decision Tree using those four features predict adoption speed for listings from rescuers held out of training? What would its predictions mean for staff who review listings at risk of remaining unadopted?
 
-How are pet characteristics and listing features related to adoption speed, and which features may be useful for a future classification model?
+## Repository Structure
 
-## Dataset
-
-The data comes from the Kaggle competition:
-
-[PetFinder.my Adoption Prediction](https://www.kaggle.com/competitions/petfinder-adoption-prediction/data)
-
-The original dataset is not included in this repository because of its size and Kaggle access requirements. A Kaggle account may be required to download the competition data.
-
-Download the competition data and place the following files inside `data/raw/`:
-
-```text
-train.csv
-breed_labels.csv
-color_labels.csv
-state_labels.csv
-```
-
-Only `train.csv` and the three label files are required for the P1 notebook.
-
-## Project Structure
-
-After cloning the repository, the `data/raw/` folder contains only `.gitkeep`. The original dataset is not included in GitHub.
+The tree below shows the main files used to run and review the analysis.
 
 ```text
 petfinder-adoption-project/
+├── artifacts/
+│   └── p2_decision_tree.joblib
 ├── data/
 │   └── raw/
 │       └── .gitkeep
 ├── figures/
+│   ├── adoption_speed_distribution.png
+│   ├── adoption_speed_by_pet_type.png
+│   ├── adoption_speed_by_age_group.png
+│   ├── adoption_speed_by_fee_group.png
+│   ├── adoption_speed_by_photo_group.png
+│   └── p2_decision_tree_confusion_matrix.png
 ├── notebooks/
-│   └── 01_p1_initial_eda.ipynb
+│   ├── 01_p1_initial_eda.ipynb
+│   └── P2/
+│       └── p2_report.md
 ├── P1/
 │   └── 01_p1_initial_eda.html
+├── src/
+│   ├── p2_baseline.py
+│   └── p2_load_model.py
 ├── .gitignore
 ├── README.md
 └── requirements.txt
 ```
 
-After downloading the required data files, place them inside `data/raw/`. The local project structure should then look like this:
+The P1 HTML export provides a browser-readable copy of the exploratory analysis. The P2 report explains the model, evaluation, and proposed staff review process.
 
-```text
-petfinder-adoption-project/
-├── data/
-│   └── raw/
-│       ├── .gitkeep
-│       ├── train.csv
-│       ├── breed_labels.csv
-│       ├── color_labels.csv
-│       └── state_labels.csv
-├── figures/
-├── notebooks/
-│   └── 01_p1_initial_eda.ipynb
-├── P1/
-│   └── 01_p1_initial_eda.html
-├── .gitignore
-├── README.md
-└── requirements.txt
-```
+## Setup and Reproduction
 
-The CSV files are stored locally and ignored by Git. They will not appear in the GitHub repository.
-
-## Development Environment
-
-The project was developed and tested with:
-
-- Windows 11
-- Python 3.11
-- VS Code
-- Jupyter Notebook
-
-Python 3.11 is recommended for reproducibility.
-
-A newer Python version, such as Python 3.12, 3.13, or 3.14, may work, but it has not been fully tested for this project. A higher version number does not automatically guarantee compatibility because some Python packages may not yet support the newest Python release.
-
-Python 3.11 and Python 3.14 can be installed on the same Windows computer. They do not need to replace each other. The Windows Python Launcher, `py`, can be used to select the required version.
-
-## Setup Instructions
+The P1 notebook and the P2 scripts were tested on Windows with Python 3.13.5 in a project-local virtual environment (`.venv`). P2 was tested with scikit-learn 1.9.1 and joblib 1.6.0. The commands below use Windows Command Prompt (`cmd`).
 
 ### 1. Clone the repository
 
-Open PowerShell or the VS Code terminal and run:
-
-```powershell
+```cmd
 git clone https://github.com/MinYang5859/petfinder-adoption-project.git
 cd petfinder-adoption-project
 ```
 
-Confirm that you are inside the project folder:
+If you are validating a specific version for the assignment, confirm the commit before running the project:
 
-```powershell
-Get-Location
-Get-ChildItem
+```cmd
+git log -1 --oneline
 ```
 
-You should see files and folders such as:
+### 2. Create the virtual environment and install dependencies
 
-```text
-README.md
-requirements.txt
-notebooks
-data
-figures
-P1
-```
+From the repository root, run:
 
-## 2. Check the Available Python Versions
-
-Before creating an environment, check the installed Python versions.
-
-Run:
-
-```powershell
-py -0p
-```
-
-This command displays all Python versions recognized by the Windows Python Launcher.
-
-You can also run:
-
-```powershell
-py --version
-python --version
-```
-
-Example output from `py -0p`:
-
-```text
--V:3.14 * C:\Users\username\AppData\Local\Programs\Python\Python314\python.exe
--V:3.11   C:\Users\username\AppData\Local\Programs\Python\Python311\python.exe
-```
-
-This example means that both Python 3.14 and Python 3.11 are installed.
-
-The `*` identifies the current default version. The project does not need to use the default version because a specific version can be selected with `py -3.11`.
-
-## 3. Choose the Python Setup
-
-Use the first option that matches your computer.
-
-### Option A: Python 3.11 Is Already Installed — Recommended
-
-Confirm that Python 3.11 is available:
-
-```powershell
-py -3.11 --version
-```
-
-Expected output:
-
-```text
-Python 3.11.x
-```
-
-Create the virtual environment with Python 3.11:
-
-```powershell
-py -3.11 -m venv .venv
-```
-
-Activate it:
-
-```powershell
-.\.venv\Scripts\Activate.ps1
-```
-
-After activation, the PowerShell prompt should begin with:
-
-```text
-(.venv)
-```
-
-Verify the Python version inside the environment:
-
-```powershell
-python --version
-```
-
-Expected output:
-
-```text
-Python 3.11.x
-```
-
-Also verify the Python location:
-
-```powershell
-python -c "import sys; print(sys.executable)"
-```
-
-The result should point to a path similar to:
-
-```text
-petfinder-adoption-project\.venv\Scripts\python.exe
-```
-
-### Option B: Only Python 3.14 Is Installed — Install Python 3.11
-
-If `py -0p` shows Python 3.14 but does not show Python 3.11, install Python 3.11 separately.
-
-Python 3.14 does not need to be removed.
-
-Install Python 3.11 with Windows Package Manager:
-
-```powershell
-winget install --id Python.Python.3.11 -e
-```
-
-After installation:
-
-1. Close PowerShell.
-2. Close VS Code.
-3. Reopen VS Code.
-4. Open the project folder again.
-5. Open a new PowerShell terminal.
-
-Confirm that Python 3.11 is now available:
-
-```powershell
-py -0p
-py -3.11 --version
-```
-
-Then create the environment:
-
-```powershell
-py -3.11 -m venv .venv
-.\.venv\Scripts\Activate.ps1
-python --version
-```
-
-The final command should show:
-
-```text
-Python 3.11.x
-```
-
-### Option C: Test Python 3.14 — Use Only If Python 3.11 Cannot Be Installed
-
-Python 3.14 may work, but this project was not developed or fully tested with Python 3.14.
-
-To test it, create a separate virtual environment:
-
-```powershell
-py -3.14 -m venv .venv
-.\.venv\Scripts\Activate.ps1
-python --version
-```
-
-Expected output:
-
-```text
-Python 3.14.x
-```
-
-Continue with the package installation instructions below.
-
-Python 3.14 can be considered usable for this project only if:
-
-- All packages install successfully.
-- The Jupyter kernel starts successfully.
-- Every notebook cell runs without errors.
-- All five expected figures are generated.
-- The final verification checks match the expected results.
-
-If package installation or notebook execution fails, delete or deactivate the test environment and use Python 3.11 instead.
-
-To leave the active environment:
-
-```powershell
-deactivate
-```
-
-### Option D: Use Conda
-
-Use this option only if Anaconda or Miniconda is already installed.
-
-Check whether `conda` is available:
-
-```powershell
-conda --version
-```
-
-Create and activate the environment:
-
-```powershell
-conda create -n petfinder-p1 python=3.11 -y
-conda activate petfinder-p1
-```
-
-Verify the version:
-
-```powershell
-python --version
-```
-
-Expected output:
-
-```text
-Python 3.11.x
-```
-
-If PowerShell reports that `conda` is not recognized, use Anaconda Prompt or follow Option A or Option B.
-
-## 4. Activate the Virtual Environment
-
-If you created `.venv`, activate it whenever you reopen the project:
-
-```powershell
-.\.venv\Scripts\Activate.ps1
-```
-
-The prompt should begin with:
-
-```text
-(.venv)
-```
-
-If PowerShell blocks the activation script, run:
-
-```powershell
-Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
-.\.venv\Scripts\Activate.ps1
-```
-
-The policy change applies only to the current PowerShell session.
-
-After activation, verify the environment:
-
-```powershell
-python --version
-python -c "import sys; print(sys.executable)"
-```
-
-## 5. Install the Required Packages
-
-Make sure the correct environment is active before installing packages.
-
-Upgrade `pip`:
-
-```powershell
-python -m pip install --upgrade pip
-```
-
-Install the project dependencies:
-
-```powershell
+```cmd
+py -3.13 --version
+py -3.13 -m venv .venv
+.venv\Scripts\activate.bat
 python -m pip install -r requirements.txt
+python -c "import sys; print(sys.executable)"
 ```
 
-Using `python -m pip` helps ensure that the packages are installed in the active environment.
+The last command should print a path ending in `petfinder-adoption-project\.venv\Scripts\python.exe`. If the project's `.venv` already exists, start with the activation command.
 
-Confirm that the packages are installed:
+### 3. Download the data
 
-```powershell
-python -m pip list
+Open the [PetFinder.my Adoption Prediction competition data page](https://www.kaggle.com/competitions/petfinder-adoption-prediction/data). Sign in and accept the competition rules if prompted. Download the competition data, extract the relevant files, and place them directly in `data/raw/`.
+
+| Task | Required files in `data/raw/` |
+|---|---|
+| Run the P1 notebook | `train.csv`, `breed_labels.csv`, `color_labels.csv`, `state_labels.csv` |
+| Train and evaluate the P2 model | `train.csv` |
+| Reload the saved P2 model | No CSV is required. The script uses `artifacts/p2_decision_tree.joblib`. |
+
+Use the labeled competition file named `train.csv`. The project creates its own training and test split from that file. The original Kaggle CSVs are stored locally and excluded from Git.
+
+To check the file names and location, run:
+
+```cmd
+dir data\raw
 ```
 
-Check the main imports:
+## P1 — Exploratory Data Analysis
 
-```powershell
-python -c "import numpy, pandas, matplotlib, seaborn; print('Package import test passed.')"
+### Run the notebook
+
+1. Open `notebooks/01_p1_initial_eda.ipynb` in VS Code.
+2. Open the kernel picker in the upper-right corner.
+3. Choose **Python Environments** and select the project's `.venv` for Python 3.13. The interpreter path should end in `.venv\Scripts\python.exe`.
+4. Restart the kernel and select **Run All**.
+
+### Expected results
+
+| Verification | Expected result |
+|---|---:|
+| Labeled listings loaded | 14,993 |
+| Missing `AgeGroup` values | 0 |
+| Missing `FeeGroup` values | 0 |
+| Missing `PhotoGroup` values | 0 |
+| Expected figure checks | All five return `True` |
+
+The notebook generates the five P1 charts listed under `figures/` in the repository structure.
+
+### Main findings
+
+- The five `AdoptionSpeed` classes have different numbers of listings.
+- Cats had a slightly lower average `AdoptionSpeed` class value than dogs in this dataset.
+- Pets aged 0–5 months tended to appear in faster adoption classes.
+- Adoption fee showed no clear linear relationship with adoption speed.
+- Listings without photos had the highest average `AdoptionSpeed` class value. The share of class 4 listings generally decreased across groups with more photos.
+
+`AdoptionSpeed` is an ordered category. Its average class value summarizes the category codes rather than the number of days to adoption. These patterns describe associations in the historical data. The effect of changing a listing feature would require a separate evaluation.
+
+## P2 — Decision Tree
+
+The model uses `Type`, `Age`, `Fee`, and `PhotoAmt` to predict `AdoptionSpeed`. The data is split by `RescuerID`, so all listings from the same rescuer stay in one set. The split contains 12,464 training listings and 2,529 test listings, with zero shared rescuer IDs.
+
+The majority-class baseline predicts class 4 for every listing because class 4 is the most frequent class in the training set. The Decision Tree has a maximum depth of 4. Both approaches are evaluated on the same test listings.
+
+### Reload the saved model
+
+To verify the model supplied in the repository, run this step **before retraining**. From the repository root, with `.venv` active, run:
+
+```cmd
+python src\p2_load_model.py
 ```
+
+The script reads the saved model and predicts one fictional listing with `Type=1`, `Age=6`, `Fee=0`, and `PhotoAmt=3`. It runs without the raw CSV. Load only a model file you trust.
 
 Expected output:
 
 ```text
-Package import test passed.
+Model features: ['Type', 'Age', 'Fee', 'PhotoAmt']
+Reloaded model prediction: 4
 ```
 
-## 6. Register the Jupyter Kernel
+### Train and evaluate
 
-Register the active environment as a Jupyter kernel:
+Place the labeled Kaggle `train.csv` at `data/raw/train.csv`. With `.venv` active, run:
 
-```powershell
-python -m ipykernel install --user --name petfinder-p1 --display-name "Python (petfinder-p1)"
+```cmd
+python src\p2_baseline.py
 ```
 
-The display name `Python (petfinder-p1)` should appear in the VS Code notebook kernel list.
+The script prints the split counts, evaluation metrics, and class 4 results. It writes the following files:
 
-## 7. Download and Prepare the Dataset
+- `figures/p2_decision_tree_confusion_matrix.png`
+- `artifacts/p2_decision_tree.joblib`
 
-1. Open the [Kaggle competition data page](https://www.kaggle.com/competitions/petfinder-adoption-prediction/data).
-2. Sign in to Kaggle if required.
-3. Accept the competition rules if required.
-4. Download the competition data.
-5. Extract the downloaded ZIP file.
-6. Copy the required files into `data/raw/`.
+The training script prints `Original model prediction: 4` for the same fictional listing. Run `python src\p2_load_model.py` again to verify that the locally trained and saved model returns the same prediction.
 
-Required files:
+### Expected test results
 
-```text
-train.csv
-breed_labels.csv
-color_labels.csv
-state_labels.csv
-```
+| Metric | Majority-class baseline | Decision Tree |
+|---|---:|---:|
+| Accuracy | 27.88% | 34.40% |
+| Correct predictions | 705 of 2,529 | 870 of 2,529 |
+| Macro F1 | 0.0872 | 0.2409 |
+| Quadratic weighted kappa | 0.0000 | 0.2201 |
 
-Confirm that the files are in the correct location:
+The tree identified 454 of the 705 actual class 4 listings, giving a recall of 64.40%. It missed the other 251. A rule that flags every class 4 prediction would flag 1,159 of the 2,529 historical test listings for manual review. Of those flagged listings, 454 actually belonged to class 4, giving a precision of 39.17%. The tree also missed all 61 actual class 0 listings.
 
-```powershell
-Get-ChildItem .\data\raw
-```
+The historical test results estimate review workload under this rule. Whether acting on the flags improves adoption outcomes remains to be tested in a staff-led pilot.
 
-Do not rename the files.
+## P2 Peer Validation Checklist
 
-Do not place them inside another folder under `data/raw/`.
+- [ ] Clone the repository into a new folder and record the commit ID.
+- [ ] Create and activate the Python 3.13 `.venv`. Install the packages from `requirements.txt`.
+- [ ] Run `python src\p2_load_model.py` before retraining. Confirm that the supplied model returns class 4 for the fictional listing.
+- [ ] Download the labeled Kaggle CSV and place it at `data/raw/train.csv`.
+- [ ] Run `python src\p2_baseline.py`. Confirm 12,464 training listings, 2,529 test listings, and zero shared rescuer IDs.
+- [ ] Compare the actual metrics with the P2 results table. Record any differences.
+- [ ] Open the generated confusion matrix. Confirm that the cell for actual class 4 and predicted class 4 shows 454.
+- [ ] Run `python src\p2_load_model.py` again. Confirm that the reloaded prediction matches the training script's prediction for the same fictional listing.
+- [ ] Record the Python version, actual outputs, and any reproduction issues in the Assignment Validation form. Complete and sign the form after testing.
 
-Correct:
-
-```text
-data/raw/train.csv
-```
-
-Incorrect:
-
-```text
-data/raw/train/train.csv
-```
-
-## 8. Run the Notebook
-
-Open the following notebook in VS Code:
-
-```text
-notebooks/01_p1_initial_eda.ipynb
-```
-
-In VS Code:
-
-1. Open the notebook.
-2. Click the kernel name in the upper-right corner.
-3. Select `Python (petfinder-p1)`.
-4. If it is not visible, choose **Select Another Kernel**.
-5. Select **Restart Kernel and Run All Cells**.
-6. Wait until every cell finishes.
-
-The notebook should complete without runtime errors.
-
-## Expected Results
-
-A successful run should:
-
-- Load 14,993 training records.
-- Report zero missing values in `AgeGroup`.
-- Report zero missing values in `FeeGroup`.
-- Report zero missing values in `PhotoGroup`.
-- Generate five figures in the `figures/` folder.
-- Complete all notebook cells without runtime errors.
-
-Expected figure files:
-
-```text
-adoption_speed_distribution.png
-adoption_speed_by_pet_type.png
-adoption_speed_by_age_group.png
-adoption_speed_by_fee_group.png
-adoption_speed_by_photo_group.png
-```
-
-Check the generated figures:
-
-```powershell
-Get-ChildItem .\figures
-```
-
-## Main P1 Findings
-
-- `AdoptionSpeed` is not evenly distributed across the five classes.
-- Cats have a slightly lower average `AdoptionSpeed` than dogs.
-- Pets aged 0–5 months generally appear in faster adoption classes.
-- Adoption fee does not show a simple linear relationship with adoption speed.
-- Listings without photos have the highest average `AdoptionSpeed`.
-- The percentage of `AdoptionSpeed 4` generally decreases as the number of photos increases.
-
-These findings show associations and do not prove causation.
-
-## Repository Contents
-
-- `notebooks/01_p1_initial_eda.ipynb`: complete P1 analysis
-- `figures/`: figures generated by the notebook
-- `P1/01_p1_initial_eda.html`: browser-readable notebook export
-- `P1/01_p1_initial_eda.pdf`: PDF notebook export
-- `requirements.txt`: required Python packages
-- `.gitignore`: excludes the original Kaggle dataset, local environments, and temporary files
-- `data/raw/.gitkeep`: preserves the required data folder structure
+To validate P1 as well, add the three label CSVs, run the notebook using the project `.venv`, and compare the output with the P1 expected results.
 
 ## Troubleshooting
 
-### `conda` Is Not Recognized
-
-Example error:
-
-```text
-conda : The term 'conda' is not recognized as the name of a cmdlet
-```
-
-Possible causes:
-
-- Anaconda or Miniconda is not installed.
-- `conda` is not available in the system `PATH`.
-- PowerShell has not been initialized for conda.
-
-Recommended solution: use the Python `venv` setup instead.
-
-If Anaconda is installed, open Anaconda Prompt and run:
-
-```powershell
-conda --version
-```
-
-### Only Python 3.14 Is Available
-
-Check the installed versions:
-
-```powershell
-py -0p
-```
-
-If Python 3.11 is missing, install it:
-
-```powershell
-winget install --id Python.Python.3.11 -e
-```
-
-Close and reopen VS Code after installation.
-
-Then run:
-
-```powershell
-py -3.11 --version
-py -3.11 -m venv .venv
-.\.venv\Scripts\Activate.ps1
-python --version
-```
-
-Python 3.14 does not need to be uninstalled.
-
-### `py -3.11` Reports That No Suitable Python Runtime Was Found
-
-This means Python 3.11 is not installed or is not recognized by the Python Launcher.
-
-Check:
-
-```powershell
-py -0p
-```
-
-Install Python 3.11:
-
-```powershell
-winget install --id Python.Python.3.11 -e
-```
-
-Then close and reopen PowerShell or VS Code.
-
-### `py` Is Not Recognized
-
-Try:
-
-```powershell
-python --version
-```
-
-If `python` reports Python 3.11, create the environment with:
-
-```powershell
-python -m venv .venv
-```
-
-If neither `py` nor `python` works, Python is not installed correctly or is not available in `PATH`.
-
-Install Python 3.11 and reopen the terminal.
-
-### PowerShell Cannot Activate `.venv`
-
-Example error:
-
-```text
-running scripts is disabled on this system
-```
-
-Run:
-
-```powershell
-Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
-.\.venv\Scripts\Activate.ps1
-```
-
-This change affects only the current PowerShell session.
-
-### The Environment Uses the Wrong Python Version
-
-Activate the environment and check:
-
-```powershell
-python --version
-python -c "import sys; print(sys.executable)"
-```
-
-If the environment was created with the wrong Python version, deactivate it:
-
-```powershell
-deactivate
-```
-
-Remove the `.venv` folder using File Explorer, or use PowerShell after confirming that you are in the project folder:
-
-```powershell
-Remove-Item -Recurse -Force .\.venv
-```
-
-Then recreate it with Python 3.11:
-
-```powershell
-py -3.11 -m venv .venv
-.\.venv\Scripts\Activate.ps1
-python --version
-```
-
-Warning: run the removal command only from the project folder and only when `.venv` is the intended environment folder.
-
-### Package Installation Fails on Python 3.14
-
-Possible cause: one or more dependencies may not yet provide a compatible release for Python 3.14.
-
-Verify the active version:
-
-```powershell
-python --version
-```
-
-If it shows Python 3.14, switch to Python 3.11:
-
-```powershell
-deactivate
-```
-
-Create a new Python 3.11 environment:
-
-```powershell
-py -3.11 -m venv .venv
-.\.venv\Scripts\Activate.ps1
-python -m pip install --upgrade pip
-python -m pip install -r requirements.txt
-```
-
-### The Virtual Environment Is Not Active
-
-Activate it:
-
-```powershell
-.\.venv\Scripts\Activate.ps1
-```
-
-The prompt should begin with:
-
-```text
-(.venv)
-```
-
-Confirm the environment path:
-
-```powershell
-python -c "import sys; print(sys.executable)"
-```
-
-### `FileNotFoundError`
-
-Confirm that the required CSV files are located directly inside:
-
-```text
-data/raw/
-```
-
-Check the folder:
-
-```powershell
-Get-ChildItem .\data\raw
-```
-
-The folder must contain:
-
-```text
-train.csv
-breed_labels.csv
-color_labels.csv
-state_labels.csv
-```
-
-Do not rename the CSV files.
-
-### Jupyter Kernel Is Missing
-
-Activate the project environment and register it again:
-
-```powershell
-python -m ipykernel install --user --name petfinder-p1 --display-name "Python (petfinder-p1)"
-```
-
-Then reopen the notebook and select `Python (petfinder-p1)`.
-
-### VS Code Uses the Wrong Python Environment
-
-In the notebook:
-
-1. Click the kernel selector in the upper-right corner.
-2. Choose **Select Another Kernel**.
-3. Select `Python (petfinder-p1)`.
-4. Restart the kernel.
-5. Run all cells again.
-
-Verify the active environment in a notebook cell:
-
-```python
-import sys
-
-print(sys.version)
-print(sys.executable)
-```
-
-The executable should point to the project `.venv` or the `petfinder-p1` conda environment.
-
-### Figures Are Not Generated
-
-Confirm that the notebook completed all cells without errors.
-
-Check the output folder:
-
-```powershell
-Get-ChildItem .\figures
-```
-
-If the figure files are missing:
-
-1. Confirm that the correct kernel is selected.
-2. Confirm that the CSV files are in `data/raw/`.
-3. Restart the notebook kernel.
-4. Run all cells again.
-5. Review the first cell that reports an error.
-
-## Final Environment Verification
-
-Before validation, run:
-
-```powershell
-python --version
-python -c "import sys; print(sys.executable)"
-python -c "import numpy, pandas, matplotlib, seaborn; print('Package import test passed.')"
-Get-ChildItem .\data\raw
-Get-ChildItem .\figures
-```
-
-Recommended Python result:
-
-```text
-Python 3.11.x
-```
-
-The final notebook verification should report:
-
-```text
-Training rows: 14993
-Missing AgeGroup values: 0
-Missing FeeGroup values: 0
-Missing PhotoGroup values: 0
-```
-
-All five expected figure checks should return `True`.
-
-## Validation Checklist
-
-The peer validator should independently complete the following steps:
-
-- [ ] Clone the GitHub repository.
-- [ ] Check the installed Python versions with `py -0p`.
-- [ ] Use Python 3.11 when available.
-- [ ] Install Python 3.11 separately if the computer has only Python 3.14.
-- [ ] Create and activate a new environment.
-- [ ] Confirm the active Python version.
-- [ ] Install packages from `requirements.txt`.
-- [ ] Download and place the four CSV files in `data/raw/`.
-- [ ] Open `notebooks/01_p1_initial_eda.ipynb`.
-- [ ] Select `Python (petfinder-p1)` as the kernel.
-- [ ] Restart the kernel and run all cells.
-- [ ] Confirm that all cells finish without runtime errors.
-- [ ] Confirm that all five figure files are generated.
-- [ ] Record any error and the steps used to resolve it.
-- [ ] Complete and sign the Assignment Validation form.
+| Issue | What to check |
+|---|---|
+| `py -3.13` cannot find Python | Run `py -0p` to see which versions the launcher recognizes. If Python 3.13 is missing, install it, reopen `cmd`, and return to Step 2. |
+| VS Code is using the wrong notebook kernel | Run `import sys` and `print(sys.executable)` in a notebook cell. If the path points to another environment, select the project's `.venv` in the kernel picker and restart the notebook kernel. |
+| `ModuleNotFoundError` | Activate the project `.venv` and run `python -m pip install -r requirements.txt`. If the error is in the notebook, also check its kernel. |
+| `FileNotFoundError` for a CSV | Run `dir data\raw` from the repository root and check that the files required for your task are in that folder. |
+| P2 cannot find the saved model | Check `dir artifacts\p2_decision_tree.joblib`. If the file is missing from a fresh clone, record that in peer validation. You can still train a local copy with `python src\p2_baseline.py` and then test reloading it. |
+| Model reload gives a version warning | Check the active environment with `python -m pip show scikit-learn joblib` and compare the versions with `requirements.txt`. |
+| A figure is missing | For P1, review the first notebook cell that reports an error. For P2, check the output of `python src\p2_baseline.py` for the saved figure path. |
+
+## P2 Submission Materials
+
+- P2 report draft (`notebooks/P2/p2_report.md`)
+- Stakeholder PowerPoint (`p2_stakeholder_presentation.pptx`)
+- Training and evaluation script, saved model, reload script, and confusion matrix
+- README, requirements, and Kaggle data access instructions
+- P1 feedback status and completed Assignment Validation form
+
+At the time of this P2 draft, P1 had not been graded and instructor feedback was not yet available. P2 extends the exploratory analysis with a held-out model evaluation, an explanation of the results for rescue staff, and a standalone model reload demonstration.
 
 ## References
 

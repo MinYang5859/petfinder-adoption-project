@@ -4,7 +4,7 @@ import joblib
 import pandas as pd
 
 # Load the project’s saved decision tree.
-project_root = Path(__file__).resolve().parents[2]
+project_root = Path(__file__).resolve().parents[1]
 model_path = project_root / "artifacts" / "p2_decision_tree.joblib"
 loaded_tree = joblib.load(model_path)
 

@@ -26,14 +26,14 @@ petfinder-adoption-project/
 │   ├── adoption_speed_by_photo_group.png
 │   └── p2_decision_tree_confusion_matrix.png
 ├── notebooks/
-│   ├── 01_p1_initial_eda.ipynb
-│   └── P2/
-│       ├── p2_baseline.py
-│       ├── p2_load_model.py
-│       ├── p2_report.md
-│       └── p2_stakeholder_presentation.pptx
+│   └── 01_p1_initial_eda.ipynb
 ├── P1/
 │   └── 01_p1_initial_eda.html
+├── P2/
+│   ├── p2_baseline.py
+│   ├── p2_load_model.py
+│   ├── p2_report.md
+│   └── p2_stakeholder_presentation.pptx
 ├── .gitignore
 ├── README.md
 └── requirements.txt
